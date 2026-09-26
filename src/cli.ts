@@ -8,10 +8,12 @@ import { indexBurns, readVaultHoldings } from "./stages/burns.js";
 import { readTokenStates, readCurveStates, readProtocolState } from "./stages/headstate.js";
 import { deriveProjects } from "./derive/projects.js";
 import { summariseActivity } from "./derive/activity.js";
+import { summariseParticipants } from "./derive/participants.js";
+import { createParticipantArtifact } from "./derive/participantArtifact.js";
 import { runAllChecks, printChecks } from "./verify/checks.js";
 import { compareWithApi, disabledComparison } from "./verify/apiCompare.js";
 import {
-  emitFactories, emitProjects, emitTrades, emitFees, emitActivity, emitSummary,
+  emitFactories, emitProjects, emitTrades, emitFees, emitActivity, emitParticipants, emitSummary,
   emitApiComparison, summariseForeignActivity,
   type RunMeta,
 } from "./emit/outputs.js";
@@ -243,6 +245,13 @@ async function main(): Promise<void> {
     tradeScan,
     launchScan: { fromBlock: EARLIEST_DEPLOYMENT_BLOCK, toBlock: head, isFullHistory: true },
   });
+  const participants = summariseParticipants({
+    launches,
+    tradeScan,
+    launchScan: { fromBlock: EARLIEST_DEPLOYMENT_BLOCK, toBlock: head, isFullHistory: true },
+    headBlock: head,
+    earliestDeploymentBlock: EARLIEST_DEPLOYMENT_BLOCK,
+  });
   console.log(
     `\n[derive] indexed transactions: ${fmt(activity.uniqueTransactionCount)} distinct tx hashes ` +
       `(${activity.isFullHistory ? "full history" : "WINDOWED, not a lifetime total"})`
@@ -281,14 +290,41 @@ async function main(): Promise<void> {
     ),
   };
 
+  // A full-history participant artifact is quotable only after input reconciliation.
+  // The frozen replay command additionally reconciles to the published 2026-09-18 run.
+  const participantArtifact = participants.isFullHistory && checks.every((check) => check.passed)
+    ? createParticipantArtifact({
+      summary: participants,
+      sourceRun: { chainId: meta.chainId, headBlock: head, startedAt, finishedAt: meta.finishedAt },
+      validation: {
+        coverageComplete: true,
+        reconciled: true,
+        method: "indexed-run",
+        counts: {
+          launchRecords: launches.length,
+          buyEvents: tradeScan.trades.filter((t) => t.side === "buy").length,
+          sellEvents: tradeScan.trades.filter((t) => t.side === "sell").length,
+          lifecycleEvents: tradeScan.lifecycle.length,
+          foreignCurveLogs: tradeScan.foreignLogsIgnored,
+          uniqueTransactionCount: activity.uniqueTransactionCount,
+          launchTransactionCount: activity.launchTransactionCount,
+          tradeTransactionCount: activity.tradeTransactionCount,
+          lifecycleTransactionCount: activity.lifecycleTransactionCount,
+          sharedAcrossCategories: activity.sharedAcrossCategories,
+          unusableTransactionHashes: activity.unusableTransactionHashes,
+        },
+      },
+    }) : null;
+
   console.log(`\n[emit] writing outputs to ${OUTPUT_DIR}`);
   emitFactories(meta, launches);
   emitProjects(projects);
   emitTrades(tradeScan);
   emitFees(projects, tradeScan, checks);
   emitActivity(meta, activity);
+  emitParticipants(meta, participantArtifact);
   emitApiComparison(api);
-  emitSummary(meta, projects, launches, tradeScan, activity, checks, api);
+  emitSummary(meta, projects, launches, tradeScan, activity, checks, api, participantArtifact);
 
   console.log(`
 done.

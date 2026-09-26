@@ -337,8 +337,8 @@ export function deriveProjects(input: DeriveInput): ProjectRecord[] {
           ? partial((buyVol + sellVol).toString(), windowNote)
           : derived((buyVol + sellVol).toString()),
         uniqueTraders: windowNote
-          ? partial(traders.size, `${windowNote}; distinct msg.sender only, not beneficial owners`)
-          : derived(traders.size, "medium", "distinct msg.sender; one person may use many wallets"),
+          ? partial(traders.size, `${windowNote}; distinct Bought.buyer and Sold.seller event addresses; transaction senders are not measured`)
+          : derived(traders.size, "medium", "distinct Bought.buyer and Sold.seller event addresses; addresses do not identify distinct people or transaction senders"),
       },
       fees: {
         totalFeesWei: windowNote

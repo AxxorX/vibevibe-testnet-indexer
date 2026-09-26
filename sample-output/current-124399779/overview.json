@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": {
+    "chainId": 46630,
+    "headBlock": 124399779,
+    "headBlockHash": "0x4ac4a3ca08fe235d7a2427088dece9127b70b0ffd44911f1544224e6334da88e",
+    "startedAt": "2026-09-25T16:46:29.885Z",
+    "finishedAt": "2026-09-26T03:52:52.510Z"
+  },
+  "sourceRunStartBlock": 95916239,
+  "counts": {
+    "launchRecords": 160851,
+    "buyEvents": 2468717,
+    "sellEvents": 849914,
+    "lifecycleEvents": 78779,
+    "foreignCurveLogs": 536,
+    "uniqueTransactionCount": 3431107,
+    "launchTransactionCount": 160851,
+    "tradeTransactionCount": 3318631,
+    "lifecycleTransactionCount": 65932,
+    "sharedAcrossCategories": 114307,
+    "unusableTransactionHashes": 0
+  },
+  "generations": [
+    {
+      "generation": "retired",
+      "factory": "0x4FEbC267e0C24440bcDEF72B5DBC5FE7BED091dF",
+      "launchCount": 14806,
+      "deltaLaunchCount": 6,
+      "lastObservedLaunchBlock": 124399056,
+      "launchIdAudit": {
+        "min": 0,
+        "max": 14805,
+        "dense": true,
+        "duplicateIds": 0
+      }
+    },
+    {
+      "generation": "legacy",
+      "factory": "0xB5B7A2f6c4EAFa2D73918fcA32d50e2126339eb9",
+      "launchCount": 44902,
+      "deltaLaunchCount": 1682,
+      "lastObservedLaunchBlock": 124399590,
+      "launchIdAudit": {
+        "min": 0,
+        "max": 44901,
+        "dense": true,
+        "duplicateIds": 0
+      }
+    },
+    {
+      "generation": "current",
+      "factory": "0x40f1be6faf8DAB9C143cce1a0A04c2075Fb2DF59",
+      "launchCount": 101143,
+      "deltaLaunchCount": 61430,
+      "lastObservedLaunchBlock": 124399775,
+      "launchIdAudit": {
+        "min": 0,
+        "max": 101142,
+        "dense": true,
+        "duplicateIds": 0
+      }
+    }
+  ],
+  "foreignCurveAddressCount": 97,
+  "deltaForeignCurveAddressCount": 12,
+  "participantSha256": "e682b05b4bd521d4ef9e4af0ffbf553908ba7a0e26dd33840895cdbcbed2f34e",
+  "proofSha256": "508f48dd130ab7388e4ef909275b8874d94d6bc8320fac6ab38a2fa5fd6effb7",
+  "checks": {
+    "passed": 10,
+    "total": 10
+  }
+}

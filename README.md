@@ -28,7 +28,7 @@ any private API.
 
 In the reference run it reconstructed **77,166 launches across three factory generations**, with
 provably dense launch-ID ranges (zero gaps, zero duplicates), and all sanity checks passing. The
-[latest validation run](#latest-validation-run), on 2026-09-18, reconstructed **97,733** launches
+[historical full-history run](#historical-full-history-run), on 2026-09-18, reconstructed **97,733** launches
 with the same properties, plus **2,098,026 indexed transactions** over full history.
 
 It also counts **indexed transactions**: distinct transaction hashes across the launch and
@@ -84,7 +84,7 @@ Reproduced by this indexer against testnet 46630:
 > The chain is live; totals drift between runs. Every figure this tool emits is stamped with
 > the head block it was read at.
 >
-> **Four runs are quoted in this repository and their totals differ, because the chain kept
+> **Several runs are quoted in this repository and their totals differ, because the chain kept
 > producing launches between them.** None has been back-fitted to another, and none refreshes
 > automatically.
 >
@@ -93,7 +93,7 @@ Reproduced by this indexer against testnet 46630:
 > | **Reference run** | 2026-09-13 | see below | 77,166 | This section and the generation table below |
 > | Sample run | 2026-09-13T17:36Z | 118,855,856 | 77,226 | [`sample-output/`](sample-output/) |
 > | Windowed validation run | 2026-09-17T08:08Z | 120,708,793 | 96,398 | superseded; kept here for the record |
-> | **Latest validation run** | **2026-09-18T17:00Z** | **121,309,670** | **97,733** | [Latest validation run](#latest-validation-run) below |
+> | **Historical full-history run** | **2026-09-18T17:00Z** | **121,309,670** | **97,733** | [Historical full-history run](#historical-full-history-run) below |
 >
 > The 2026-09-17 run scanned curve events over a 200,000-block window. That is why it carries
 > no transaction count: a window's worth of transactions is not a lifetime total, and the
@@ -104,7 +104,27 @@ Reproduced by this indexer against testnet 46630:
 
 ---
 
-## Latest validation run
+## Latest validated incremental snapshot
+
+**2026-09-26, pinned head 124,399,779.** The preserved September 18 prefix plus
+blocks **121,309,671–124,399,779** yields **160,851 launches**, **3,431,107 indexed
+transactions**, **78,779 lifecycle events**, and **118,251 Indexed actor addresses /
+118,251 Indexed participant addresses**. No full-history RPC scan, receipts or
+transaction-sender fetches were used. Explore remains on its separate enriched source.
+
+The original prefix reproduced exactly. The delta discovered 63,118 projects before
+curve attribution, and 513,547 included curve events came from those new curves.
+Factory counts are retired 14,806; legacy 44,902; current 101,143. No new factory was
+found by published configuration or known launch-event discovery; this is bounded
+discovery, not proof of all possible deployments.
+
+See [validation and changed-file report](INCREMENTAL_VALIDATION_2026-09-26.md),
+[aggregate artifacts](sample-output/current-124399779/overview.json), and
+[incremental reproduction](docs/incremental-snapshots.md). Recovery/cache chunks stay
+ignored; the dated aggregate, proof and input-hash manifest are intentional public
+artifacts. Fee/graduation verification dates remain separate from event freshness.
+
+## Historical full-history run
 
 **2026-09-18.** A read-only run against Robinhood Chain testnet, chain ID 46630. The first run
 with a **full-history curve scan**, which is what makes the transaction count a lifetime figure.
@@ -273,6 +293,7 @@ Written to `output/`.
 | `factories.json` | All configured generations, launches indexed per generation, shared contracts, keepers, quote assets, run metadata, launchId audit, and `run.foreignActivity` (curve-shaped activity from unrecognised contracts) |
 | `fees.json` | **Fee policy per generation**, observed aggregates, burn accounting (both legs), sanity-check results |
 | `activity.json` | **Indexed transactions**: distinct transaction hashes across the launch and curve event surfaces, with per-category counts, scan scope, included events and exclusions. See [Counting transactions](#counting-transactions) below |
+| `participants.json` | **Indexed actor addresses** and **Indexed participant addresses**, globally deduplicated with role breakdowns, overlaps, multiple-project counts and full provenance. Incomplete/windowed runs emit an unavailable stub with no counts. See [address participation](docs/participants.md) |
 | `lifecycle.json` | Curve completions, graduations, creator-fee forwards |
 | `indexer-summary.md` | Human-readable run report |
 | `projects-enriched-sample.json` | Up to 500 fully enriched project records, readable by hand |
@@ -457,6 +478,27 @@ The included surfaces are exactly `TokenLaunched`, `TokenLaunchedQuoted`, `Bough
 lists them so a reader never has to infer the scope from prose.
 
 ---
+
+## Indexed address participation
+
+**Indexed actor addresses** is the global union of launch `creator`, `Bought.buyer`
+and `Sold.seller`. **Indexed participant addresses** adds `Bought.recipient` to that
+union. Receiving a buy does not independently make an address an actor. These are
+cumulative event-role address counts; contracts and intermediaries remain included.
+They do not measure distinct people, transaction senders or time-windowed activity.
+
+The dedicated derivation also preserves creator, buyer/seller, buy-recipient and
+trade-participant counts, both creator overlaps, and separate actor/participant
+multiple-project counts. Categories overlap and must never be summed for a headline.
+
+The published source run can be reproduced from cached history plus only the missing
+tail, blocks **121,296,239–121,309,670**. `npm run replay:participants` performs offline
+validation/replay; explicit `--recover-tail` authorizes bounded event-log retrieval.
+No receipts or transaction senders are fetched. Publication requires exact reconciliation
+to 97,733 launches, 2,098,026 indexed transactions and 75,459 lifecycle events at head
+121,309,670. A mismatch fails before writing participant metrics.
+
+See [the artifact contract, recovery procedure and exclusions](docs/participants.md).
 
 ## Known Limitations
 

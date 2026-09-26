@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": {
+    "chainId": 46630,
+    "headBlock": 124399779,
+    "headBlockHash": "0x4ac4a3ca08fe235d7a2427088dece9127b70b0ffd44911f1544224e6334da88e",
+    "startedAt": "2026-09-25T16:46:29.885Z",
+    "finishedAt": "2026-09-26T03:52:52.510Z"
+  },
+  "sourceRunStartBlock": 95916239,
+  "prefix": {
+    "sourceRun": {
+      "chainId": 46630,
+      "headBlock": 121309670,
+      "startedAt": "2026-09-18T16:27:46.209Z",
+      "finishedAt": "2026-09-18T17:00:25.492Z"
+    },
+    "counts": {
+      "launchRecords": 97733,
+      "buyEvents": 1565964,
+      "sellEvents": 427376,
+      "lifecycleEvents": 75459,
+      "foreignCurveLogs": 502,
+      "uniqueTransactionCount": 2098026,
+      "launchTransactionCount": 97733,
+      "tradeTransactionCount": 1993340,
+      "lifecycleTransactionCount": 62848,
+      "sharedAcrossCategories": 55895,
+      "unusableTransactionHashes": 0
+    },
+    "inputManifestSha256": "45ac5115ff0dbfaed90f6a88f1d91a9d69da2ccf36d638049d55c8997a81e702"
+  },
+  "prefixParticipantSha256": "bd7bf075effc098e3256b594a018a7c1db81eb65bbc64defad010aae6066d564",
+  "delta": {
+    "fromBlock": 121309671,
+    "toBlock": 124399779,
+    "counts": {
+      "launchRecords": 63118,
+      "buyEvents": 902753,
+      "sellEvents": 422538,
+      "lifecycleEvents": 3320,
+      "foreignCurveLogs": 34,
+      "uniqueTransactionCount": 1333081,
+      "launchTransactionCount": 63118,
+      "tradeTransactionCount": 1325291,
+      "lifecycleTransactionCount": 3084,
+      "sharedAcrossCategories": 58412,
+      "unusableTransactionHashes": 0
+    },
+    "lifecycleByKind": {
+      "CreatorFeesForwarded": 2850,
+      "CurveCompleted": 234,
+      "Graduated": 236
+    },
+    "eventsFromNewCurves": 513547,
+    "newCurves": 63118,
+    "foreignAddresses": [
+      "0x20113ee091b69c5d181ec58339ed563f94e6f9f1",
+      "0x69278c6ec5d4d61f0028a1f27213c3b1574201c0",
+      "0x7d37e8d9f6401b24f3b3e3b0697d81e640f6bc20",
+      "0x83cc2706b6ca43f16fb731f52b680efed6cfe464",
+      "0x877d8312b8484b273f23391807eb156cf80324bd",
+      "0x8edbdee73a498177db2632283cf691fdda9e215b",
+      "0xa14b7485804f705081ba073d4a950fd6298b6771",
+      "0xb0beafed576f12ec0e7c6cbeb477ac51a12e9fde",
+      "0xb34ed6a44901d70a4a6656e206dd5b1e3fbedc36",
+      "0xb4ea3a9055d59a59995b1b4a3524079079d65899",
+      "0xedb9b90dfc4895c3fb43e93ab935b70b5e557882",
+      "0xfc48111bc6381edc7c6c42269ad86a4b63565733"
+    ]
+  },
+  "anchors": {
+    "prefix": {
+      "blockNumber": 121309669,
+      "storedHash": "0x471558995a5b62c07f356e870908e9900362c2b1344735f6f9eaa83ffebad827",
+      "beforeHash": "0x471558995a5b62c07f356e870908e9900362c2b1344735f6f9eaa83ffebad827",
+      "afterHash": "0x471558995a5b62c07f356e870908e9900362c2b1344735f6f9eaa83ffebad827"
+    },
+    "head": {
+      "blockNumber": 124399779,
+      "beforeHash": "0x4ac4a3ca08fe235d7a2427088dece9127b70b0ffd44911f1544224e6334da88e",
+      "afterHash": "0x4ac4a3ca08fe235d7a2427088dece9127b70b0ffd44911f1544224e6334da88e"
+    }
+  },
+  "head": {
+    "number": 124399779,
+    "hash": "0x4ac4a3ca08fe235d7a2427088dece9127b70b0ffd44911f1544224e6334da88e",
+    "timestamp": 1790394237
+  },
+  "headObservedAt": "2026-09-26T03:44:00.592Z",
+  "priorTargets": [
+    {
+      "head": {
+        "number": 124199582,
+        "hash": "0xc91c92ba86a8c4bf90fd2c28ccdc1bcc596de2503fbbc0f9edf606d39f9a1f56",
+        "timestamp": 1790354790
+      },
+      "checkedCanonicalHash": "0xc91c92ba86a8c4bf90fd2c28ccdc1bcc596de2503fbbc0f9edf606d39f9a1f56",
+      "preflightSha256": "bc0a4873c1a57c6b3872faf99aee0737f5332df966a11867e2ff17bec9c3f0e4"
+    }
+  ],
+  "prefixHead": {
+    "number": 121309670,
+    "hash": "0x793961600487e90c782d535791295d937bead99c5545651af9da8dcf7aa41bdf",
+    "timestamp": 1789748866
+  },
+  "recoveryIncidents": [
+    {
+      "surface": "curve",
+      "fromBlock": 122509671,
+      "toBlock": 122519670,
+      "error": "zero-byte file left by interrupted scan; JSON parsing rejected it",
+      "resolution": "preserved under incomplete/ and refetched only this delta range; raw chunk writes now atomic",
+      "historicalPrefixAffected": false
+    }
+  ],
+  "configuredFactories": [
+    {
+      "factory": "0x4FEbC267e0C24440bcDEF72B5DBC5FE7BED091dF",
+      "generation": "retired",
+      "launchCount": 14806,
+      "graduationAdapter": "0x1fD0f2BD38ADa69e2eF138FAf5377c5a5A574e8f",
+      "protocolTreasury": "0x3b13605865D7164d1dfe2080E22910df3a701899",
+      "runtimeHash": "0x2b99cc917b2a88411b9b085383279d0307df7d5a6bd731cd2680823c4c444a6d"
+    },
+    {
+      "factory": "0xB5B7A2f6c4EAFa2D73918fcA32d50e2126339eb9",
+      "generation": "legacy",
+      "launchCount": 44902,
+      "graduationAdapter": "0x1eD9E88AE14713ca4bc964BADe2Bc1e3f5CD501a",
+      "protocolTreasury": "0x29b1B6031df02D68332502FBD39Aee874dE24e03",
+      "runtimeHash": "0xde5e8c6493ea8f1c929b8a5bfb94fd4497559dd6fbd07cb124e2638778930c10"
+    },
+    {
+      "factory": "0x40f1be6faf8DAB9C143cce1a0A04c2075Fb2DF59",
+      "generation": "current",
+      "launchCount": 101143,
+      "graduationAdapter": "0xA6a5D4C098dA8f79eae1203A8E42ff9AC7a17F06",
+      "protocolTreasury": "0x91719A47f855079678b3D5E3af69CDe2b830c5C9",
+      "runtimeHash": "0x19efaac91ce00e2493331c418c9b1738e9ec03a0365c8fc9f2bd5cf5c1142a82"
+    }
+  ],
+  "configurationChanges": [
+    "Operator application deployment changed from testnet-v5-r3.bea975e9-20260917.2 to testnet-v5-r3.4b890b41-20260925.1; published factory/infrastructure addresses match the configured generations."
+  ],
+  "operatorConfigCheckedAt": "2026-09-26T03:44:00.152Z",
+  "operatorConfigSha256": "bbb3baf56b8b7a73abc468753265b14c60cc567157e2f68e430ac425a27e7c1a",
+  "operatorDeploymentVersion": "testnet-v5-r3.4b890b41-20260925.1",
+  "unknownLaunchEmitters": [],
+  "rawEventCounts": {
+    "TokenLaunched": 63118,
+    "Bought": 902765,
+    "Sold": 422555,
+    "CreatorFeesForwarded": 2850,
+    "CurveCompleted": 237,
+    "Graduated": 238
+  },
+  "duplicateEventsRemoved": 0,
+  "coverageComplete": true,
+  "prefixReconciled": true,
+  "deltaValidated": true,
+  "counts": {
+    "launchRecords": 160851,
+    "buyEvents": 2468717,
+    "sellEvents": 849914,
+    "lifecycleEvents": 78779,
+    "foreignCurveLogs": 536,
+    "uniqueTransactionCount": 3431107,
+    "launchTransactionCount": 160851,
+    "tradeTransactionCount": 3318631,
+    "lifecycleTransactionCount": 65932,
+    "sharedAcrossCategories": 114307,
+    "unusableTransactionHashes": 0
+  },
+  "checks": [
+    "immutable prefix manifest and participant totals",
+    "exact historical event and transaction reconciliation",
+    "canonical prefix/head anchors unchanged",
+    "gap-free factory and curve delta chunks",
+    "topic-only launch discovery has no unconfigured emitter",
+    "dense per-factory IDs equal pinned onchain launchCount",
+    "new curves included before curve attribution",
+    "strict raw log decoding and stable identity deduplication",
+    "disjoint transaction sets and global union",
+    "participant role unions and diagnostics"
+  ],
+  "limitations": [
+    "Factory discovery remains bounded to published configuration and known launch event signatures; no canonical factory registry exists.",
+    "Current-head snapshot is pinned to the observed block hash, not a claim of finality or a continuously updating feed.",
+    "The preserved latest event hash anchors block 121309669; the old-head header was observed during this advancement, not stored by the September 18 run. Its event-free suffix is inherited from that validated run.",
+    "Factory runtime hashes were captured at the new head; no historical runtime-hash comparison is claimed.",
+    "Fee/graduation economics retain their earlier verification dates; no burn scan or project state enrichment was run."
+  ]
+}

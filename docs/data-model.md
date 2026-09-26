@@ -110,8 +110,10 @@ note, never guessed.
 
 Volumes sum `Bought.grossEthUsed` and `Sold.grossCurveQuote`. On a quoted launch these
 are **quote-asset units, not wei**. The field name says Wei for schema stability; read
-`market.quoteAsset` before interpreting. `uniqueTraders` counts distinct `msg.sender`,
-not people.
+`market.quoteAsset` before interpreting. `uniqueTraders` counts distinct `Bought.buyer`
+and `Sold.seller` event addresses within each project. It does not measure transaction
+senders or distinct people, and excludes buy recipients. Do not sum project counts to
+obtain a global address count; use [`participants.json`](participants.md).
 
 #### `fees`
 `totalFeesWei`, `creatorFeesWei`, `protocolFeesWei` are summed from the `creatorFee` and

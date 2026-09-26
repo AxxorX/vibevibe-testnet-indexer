@@ -12,6 +12,7 @@ node_modules/
 data/
 output/
 cache/
+recovery/
 
 # sample-output/ IS committed: small, sanitized, demonstrative.
 !sample-output/

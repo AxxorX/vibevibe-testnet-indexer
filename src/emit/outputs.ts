@@ -7,6 +7,7 @@ import { GENERATIONS, PROTOCOL_CONSTANTS, SHARED, ASSETS, KEEPERS, VERIFIED_AT }
 import { config } from "../../config/network.js";
 import type { ProjectRecord } from "../derive/projects.js";
 import type { ActivitySummary } from "../derive/activity.js";
+import type { ParticipantArtifact } from "../derive/participantArtifact.js";
 import type { TradeScanResult } from "../stages/trades.js";
 import type { CheckResult } from "../verify/checks.js";
 import type { ApiComparison } from "../verify/apiCompare.js";
@@ -390,6 +391,17 @@ export function emitActivity(meta: RunMeta, activity: ActivitySummary): void {
   }, 1);
 }
 
+/** No counting here: publish the validated aggregate or an explicit unavailable stub. */
+export function emitParticipants(meta: RunMeta, artifact: ParticipantArtifact | null): void {
+  writeJson(path.join(OUTPUT_DIR, "participants.json"), artifact ?? {
+    schemaVersion: 1,
+    definitionVersion: 1,
+    status: "unavailable",
+    sourceRunHeadBlock: meta.headBlock,
+    reason: "Participant publication requires full-history launch and curve coverage and passing run checks. No address counts are published for this run.",
+  }, 1);
+}
+
 export function emitFees(
   projects: ProjectRecord[],
   scan: TradeScanResult,
@@ -474,7 +486,8 @@ export function emitSummary(
   scan: TradeScanResult,
   activity: ActivitySummary,
   checks: CheckResult[],
-  api: ApiComparison
+  api: ApiComparison,
+  participants: ParticipantArtifact | null = null
 ): void {
   const byGen = new Map<string, number>();
   for (const l of launches) byGen.set(l.generation, (byGen.get(l.generation) ?? 0) + 1);
@@ -540,6 +553,12 @@ ${[...byGen.entries()].map(([g, n]) => `| - ${g} | ${fmt(n)} |`).join("\n")}
 | Trades indexed | ${fmt(scan.trades.length)} |
 | Graduations observed | ${fmt(scan.lifecycle.filter((e) => e.kind === "Graduated").length)} |
 | Curve completions observed | ${fmt(scan.lifecycle.filter((e) => e.kind === "CurveCompleted").length)} |
+
+## Indexed address participation
+
+${participants
+    ? `**${fmt(participants.indexedActorAddressCount)} indexed actor addresses** and **${fmt(participants.indexedParticipantAddressCount)} indexed participant addresses**.\n\n${participants.definitions.actor}\n\n${participants.definitions.participant}\n\nFull history through block ${fmt(participants.sourceRunHeadBlock)}. See participants.json for overlaps, multiple-project counts, normalization, role exclusions and source integrity. Category totals overlap.`
+    : "Unavailable for this run: full-history coverage and passing run checks are required."}
 
 ## Indexed transactions
 

@@ -1,14 +1,14 @@
 import type { Address, Hex } from "viem";
-import { scanLogs, sortLogs, type RawLog } from "../lib/logscan.js";
+import { scanLogs, sortLogs } from "../lib/logscan.js";
 import { FACTORY_EVENTS } from "../../config/abis.js";
 import {
   FACTORY_ADDRESSES,
-  FACTORY_BY_ADDRESS,
   EARLIEST_DEPLOYMENT_BLOCK,
   type Generation,
 } from "../../config/factories.js";
 import { RAW_DIR, fmt, writeRaw } from "../lib/cache.js";
 import path from "node:path";
+import { decodeLaunchLog } from "./decode.js";
 
 /**
  * STAGE 1: LAUNCHES
@@ -77,39 +77,13 @@ export async function indexLaunches(head: number): Promise<LaunchRecord[]> {
     }
     if (log.eventName !== "TokenLaunched" && log.eventName !== "TokenLaunchedQuoted") continue;
 
-    const gen = FACTORY_BY_ADDRESS.get(log.address.toLowerCase());
-    if (!gen) {
-      // Should be impossible given the address filter, but never silently drop.
+    const launch = decodeLaunchLog(log);
+    if (!launch) {
       console.warn(`  ! launch from unknown factory ${log.address} at block ${log.blockNumber}`);
       continue;
     }
-
-    const a = log.args as Record<string, unknown>;
-    const quoted = log.eventName === "TokenLaunchedQuoted";
-
-    launches.push({
-      key: `${gen.generation}:${String(a.launchId)}`,
-      generation: gen.generation,
-      factory: gen.factory,
-      launchId: String(a.launchId),
-      token: String(a.token).toLowerCase() as Address,
-      curve: String(a.curve).toLowerCase() as Address,
-      creator: String(a.creator).toLowerCase() as Address,
-      creatorFeeRecipient: String(a.creatorFeeRecipient).toLowerCase() as Address,
-      creatorVault: String(a.creatorVault).toLowerCase() as Address,
-      quoteCurrency: quoted ? (String(a.quoteCurrency).toLowerCase() as Address) : null,
-      isQuotedLaunch: quoted,
-      initialBuy: String(a.initialBuy ?? "0"),
-      initialTokensBought: String(a.initialTokensBought ?? "0"),
-      metadataSchemaVersion: Number(a.metadataSchemaVersion ?? 0),
-      metadataDigest: a.metadataDigest as Hex,
-      metadataURI: String(a.metadataURI ?? ""),
-      deploymentBlock: log.blockNumber,
-      deploymentTxHash: log.transactionHash,
-      logIndex: log.logIndex,
-    });
-
-    byGeneration[gen.generation] = (byGeneration[gen.generation] ?? 0) + 1;
+    launches.push(launch);
+    byGeneration[launch.generation] = (byGeneration[launch.generation] ?? 0) + 1;
   }
 
   const quotedCount = launches.filter((l) => l.isQuotedLaunch).length;

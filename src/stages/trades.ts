@@ -4,6 +4,7 @@ import { CURVE_EVENTS } from "../../config/abis.js";
 import { RAW_DIR, fmt, writeRaw } from "../lib/cache.js";
 import path from "node:path";
 import type { LaunchRecord } from "./launches.js";
+import { decodeCurveLog } from "./decode.js";
 
 /**
  * STAGE 2: TRADES, COMPLETIONS, GRADUATIONS
@@ -105,93 +106,14 @@ export async function indexTrades(
   const foreignAddrs = new Set<string>();
 
   for (const log of sortLogs(logs)) {
-    const curve = log.address.toLowerCase() as Address;
-    const token = curveToToken.get(curve) ?? null;
-
-    if (!token) {
-      // Same topic0, different contract. Not a vibe/vibe curve.
+    const decoded = decodeCurveLog(log, curveToToken);
+    if (decoded.foreign) {
       foreign++;
-      if (foreignAddrs.size < 20) foreignAddrs.add(curve);
+      if (foreignAddrs.size < 20) foreignAddrs.add(log.address.toLowerCase());
       continue;
     }
-
-    const a = log.args as Record<string, unknown>;
-
-    if (log.eventName === "Bought") {
-      const creatorFee = BigInt(String(a.creatorFee ?? 0));
-      const protocolFee = BigInt(String(a.protocolFee ?? 0));
-      trades.push({
-        curve,
-        token,
-        side: "buy",
-        trader: String(a.buyer).toLowerCase() as Address,
-        recipient: String(a.recipient).toLowerCase() as Address,
-        grossWei: String(a.grossEthUsed ?? 0),
-        curveQuoteWei: String(a.curveQuote ?? 0),
-        ethReceivedWei: null,
-        tokenAmount: String(a.tokenAmount ?? 0),
-        creatorFeeWei: creatorFee.toString(),
-        protocolFeeWei: protocolFee.toString(),
-        totalFeeWei: (creatorFee + protocolFee).toString(),
-        blockNumber: log.blockNumber,
-        txHash: log.transactionHash,
-        logIndex: log.logIndex,
-      });
-    } else if (log.eventName === "Sold") {
-      const creatorFee = BigInt(String(a.creatorFee ?? 0));
-      const protocolFee = BigInt(String(a.protocolFee ?? 0));
-      trades.push({
-        curve,
-        token,
-        side: "sell",
-        trader: String(a.seller).toLowerCase() as Address,
-        recipient: null,
-        grossWei: String(a.grossCurveQuote ?? 0),
-        curveQuoteWei: String(a.grossCurveQuote ?? 0),
-        ethReceivedWei: String(a.ethReceived ?? 0),
-        tokenAmount: String(a.tokenAmount ?? 0),
-        creatorFeeWei: creatorFee.toString(),
-        protocolFeeWei: protocolFee.toString(),
-        totalFeeWei: (creatorFee + protocolFee).toString(),
-        blockNumber: log.blockNumber,
-        txHash: log.transactionHash,
-        logIndex: log.logIndex,
-      });
-    } else if (log.eventName === "CurveCompleted") {
-      lifecycle.push({
-        curve,
-        token,
-        kind: "CurveCompleted",
-        blockNumber: log.blockNumber,
-        txHash: log.transactionHash,
-        logIndex: log.logIndex,
-        netEthReserve: String(a.netEthReserve ?? 0),
-        timestamp: String(a.timestamp ?? 0),
-      });
-    } else if (log.eventName === "Graduated") {
-      lifecycle.push({
-        curve,
-        token,
-        kind: "Graduated",
-        blockNumber: log.blockNumber,
-        txHash: log.transactionHash,
-        logIndex: log.logIndex,
-        poolId: a.poolId as Hex,
-        ethAmount: String(a.ethAmount ?? 0),
-        tokenAmount: String(a.tokenAmount ?? 0),
-      });
-    } else if (log.eventName === "CreatorFeesForwarded") {
-      lifecycle.push({
-        curve,
-        token,
-        kind: "CreatorFeesForwarded",
-        blockNumber: log.blockNumber,
-        txHash: log.transactionHash,
-        logIndex: log.logIndex,
-        vault: String(a.vault).toLowerCase() as Address,
-        amount: String(a.amount ?? 0),
-      });
-    }
+    if (decoded.trade) trades.push(decoded.trade);
+    if (decoded.lifecycle) lifecycle.push(decoded.lifecycle);
   }
 
   const buys = trades.filter((t) => t.side === "buy").length;

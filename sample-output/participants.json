@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "definitionVersion": 1,
+  "chain": {
+    "chainId": 46630,
+    "network": "TESTNET"
+  },
+  "sourceRunStartBlock": 95916239,
+  "sourceRunHeadBlock": 121309670,
+  "sourceRun": {
+    "chainId": 46630,
+    "headBlock": 121309670,
+    "startedAt": "2026-09-18T16:27:46.209Z",
+    "finishedAt": "2026-09-18T17:00:25.492Z"
+  },
+  "derivedAt": "2026-09-25T11:42:03.959Z",
+  "indexedActorAddressCount": 88781,
+  "indexedParticipantAddressCount": 88781,
+  "distinctCreatorAddressCount": 40247,
+  "distinctBuyerSellerAddressCount": 81828,
+  "distinctBuyRecipientAddressCount": 82947,
+  "distinctTradeParticipantAddressCount": 82950,
+  "creatorBuyerSellerOverlap": 33294,
+  "creatorTradeParticipantOverlap": 34416,
+  "multiProjectActorAddressCount": 54212,
+  "multiProjectParticipantAddressCount": 54212,
+  "recipientOnlyAddressCount": 0,
+  "scope": "configured-launch-and-curve-event-addresses",
+  "isFullHistory": true,
+  "launchScan": {
+    "fromBlock": 95916239,
+    "toBlock": 121309670,
+    "isFullHistory": true
+  },
+  "curveScan": {
+    "fromBlock": 95916239,
+    "toBlock": 121309670,
+    "isFullHistory": true
+  },
+  "definitions": {
+    "actor": "Distinct normalized nonzero addresses in the global union of TokenLaunched/TokenLaunchedQuoted.creator, Bought.buyer and Sold.seller. Actor describes an event role, not a transaction sender or a person.",
+    "participant": "Distinct normalized nonzero addresses in the global union of actor addresses and Bought.recipient. A recipient may receive tokens without initiating activity. Each address counts once across all included roles and projects."
+  },
+  "includedRoles": {
+    "actors": [
+      "TokenLaunched.creator",
+      "TokenLaunchedQuoted.creator",
+      "Bought.buyer",
+      "Sold.seller"
+    ],
+    "additionalParticipants": [
+      "Bought.recipient"
+    ]
+  },
+  "excludedRoles": [
+    "TokenLaunched/TokenLaunchedQuoted.creatorFeeRecipient",
+    "TokenLaunched/TokenLaunchedQuoted.creatorVault",
+    "TokenLaunched/TokenLaunchedQuoted.token",
+    "TokenLaunched/TokenLaunchedQuoted.curve",
+    "TokenLaunchedQuoted.quoteCurrency",
+    "factory/log-emitter address",
+    "CreatorFeesForwarded.vault",
+    "LaunchFeesClaimed.treasury",
+    "other infrastructure/configuration addresses without an included event role"
+  ],
+  "normalization": "Trim whitespace, accept an optional case-insensitive 0x prefix, require exactly 40 hexadecimal characters, and lowercase before deduplication. Reject malformed and zero addresses with separate counters; do not filter valid contracts.",
+  "contractInclusionPolicy": "Preserve every valid nonzero address in an included role, including contract and intermediary addresses. Do not classify EOA versus contract. An infrastructure address counts if it independently appears in an included role.",
+  "exclusions": [
+    "Configured destinations and infrastructure fields: creatorFeeRecipient, creatorVault, token, curve, factory, quoteCurrency, CreatorFeesForwarded.vault and LaunchFeesClaimed.treasury. These are role exclusions, not contract-address classification.",
+    "CurveCompleted and Graduated expose no initiating participant address. CreatorFeesForwarded exposes only a vault destination, so lifecycle-only transaction senders are not measured.",
+    "Post-graduation swaps, transfers, approvals, buyback/burn activity, failed calls and transactions without an included participant-bearing event.",
+    "Activity from factories outside the configured launch registry and curve logs not attributable to its indexed launches."
+  ],
+  "limitations": [
+    "Addresses do not establish people, wallet ownership or real-world identity. One person may control several addresses; an address may represent a contract or intermediary.",
+    "All usable addresses in included event roles are retained, including contracts. No EOA/contract classification, identity enrichment or transaction-sender inference is performed.",
+    "Counts describe the declared scan ranges through the snapshot head. A windowed contributing scan prevents a full-history claim.",
+    "Unusable participant address values and unmapped trade events are reported in integrity and must be reviewed before publication. Complete cached block coverage and source-run reconciliation require separate validation."
+  ],
+  "integrity": {
+    "launchRecords": 97733,
+    "tradeRecords": 1993340,
+    "unusableAddressValues": 0,
+    "malformedAddressValues": 0,
+    "zeroAddressValues": 0,
+    "rejectedByRole": {
+      "TokenLaunched.creator": 0,
+      "TokenLaunchedQuoted.creator": 0,
+      "Bought.buyer": 0,
+      "Sold.seller": 0,
+      "Bought.recipient": 0
+    },
+    "rejectedByReason": {
+      "malformed": 0,
+      "zero": 0
+    },
+    "rejectedByRoleAndReason": {
+      "TokenLaunched.creator": {
+        "malformed": 0,
+        "zero": 0
+      },
+      "TokenLaunchedQuoted.creator": {
+        "malformed": 0,
+        "zero": 0
+      },
+      "Bought.buyer": {
+        "malformed": 0,
+        "zero": 0
+      },
+      "Sold.seller": {
+        "malformed": 0,
+        "zero": 0
+      },
+      "Bought.recipient": {
+        "malformed": 0,
+        "zero": 0
+      }
+    },
+    "unmappedTradeEvents": 0
+  },
+  "validation": {
+    "coverageComplete": true,
+    "reconciled": true,
+    "method": "frozen-cache-replay",
+    "counts": {
+      "launchRecords": 97733,
+      "buyEvents": 1565964,
+      "sellEvents": 427376,
+      "lifecycleEvents": 75459,
+      "foreignCurveLogs": 502,
+      "uniqueTransactionCount": 2098026,
+      "launchTransactionCount": 97733,
+      "tradeTransactionCount": 1993340,
+      "lifecycleTransactionCount": 62848,
+      "sharedAcrossCategories": 55895,
+      "unusableTransactionHashes": 0
+    },
+    "inputManifest": "participants-input-manifest.json",
+    "inputManifestSha256": "45ac5115ff0dbfaed90f6a88f1d91a9d69da2ccf36d638049d55c8997a81e702"
+  }
+}

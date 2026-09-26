@@ -132,14 +132,16 @@ complete.
 
 ## 6. `uniqueTraders` counts addresses, not people
 
-Derived from distinct `msg.sender` in `Bought`/`Sold`. One person may control many
-wallets; one wallet may be a contract acting for many people. The field is marked
+Derived from distinct `Bought.buyer` and `Sold.seller` event fields. These are not
+necessarily transaction senders. One person may control many addresses; an address
+may represent a contract or intermediary. The field is marked
 `confidence: "medium"` for this reason, independently of scan scope.
 
 Note also that `Bought` carries **both** `buyer` and `recipient`, which differ when a
 purchase is made through the undocumented `buyFor(uint256,address,address)`. This
-indexer counts `buyer`. Counting `recipient` would give a different, equally defensible
-number, and a real analytics product has to pick and disclose.
+per-project `uniqueTraders` field counts `buyer`. The global address artifact explicitly
+separates actors (creators, buyers and sellers) from participants (actors plus buy
+recipients); see [participant definitions and limitations](participants.md).
 
 ---
 
